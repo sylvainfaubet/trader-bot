@@ -1,0 +1,17 @@
+{
+  "name": "bittrex-bot",
+  "version": "1.0.0",
+  "description": "a simple bittrex bot",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "author": "s.faubet",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.19.3",
+    "node-bittrex-api": "^0.7.8",
+    "technicalindicators": "^1.0.21"
+  }
+}
