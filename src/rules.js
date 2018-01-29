@@ -57,7 +57,7 @@ function isOrderBookForBuy(coin, coinHistory, lastOrder) {
 }
 
 function ruleNotLocked(coin, coinHistory, lastOrder){
-	return (!!coinsLocks[coin] && moment().diff(coinsLocks[coin]) > 3600000) || !coinsLocks[coin])
+	return (!!coinsLocks[coin] && moment().diff(coinsLocks[coin]) > 3600000) || !coinsLocks[coin];
 }
 
 module.exports.getBuyRules = function(){
