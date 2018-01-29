@@ -9,8 +9,9 @@ var isOrderPlaying = {};
 var isOrderSelling = {};
 var orders = dataset.orders;
 var locked = false;
+var filename = 'orders.log';
 
-fs.writeFile('orders.csv', 'COIN;BUY_VALUE;BUY_TIMESTAMP;SELL_VALUE;SELL_TIMESTAMP;GAIN\r\n',
+fs.writeFile(filename, 'COIN;BUY_VALUE;BUY_TIMESTAMP;SELL_VALUE;SELL_TIMESTAMP;GAIN\r\n',
 	function (err) {
 		if (err) throw err;
 		console.log('initialisation fichier de résultats.');
@@ -121,7 +122,7 @@ function logOrder(order) {
 			order.results.sellMoment
 			.diff(order.results.buyMoment) / 1000,
 			'secondes');
-		fs.appendFile('orders.csv', order.buy.MarketName +
+		fs.appendFile(filename, order.buy.MarketName +
 			";" +
 			order.results.buyValue +
 			";" +

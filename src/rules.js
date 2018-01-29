@@ -1,5 +1,6 @@
 var tools = require('./tools');
 var bittrex = require('node-bittrex-api');
+var coinsLocks = {};
 
 // RULES
 function isMaxGainDone(coin, coinHistory, lastOrder) {
@@ -8,6 +9,9 @@ function isMaxGainDone(coin, coinHistory, lastOrder) {
 		var result = gain >= 4;
 		if (result) {
 			console.log('isMaxGainDone : ', coin);
+			if(!!coinsLocks[coin]){
+				delete coinsLocks[coin];
+			}
 		}
 		return result;
 	}
@@ -21,6 +25,7 @@ function isMaxLossDone(coin, coinHistory, lastOrder) {
 
 		if (result) {
 			console.log('isMaxLossDone : ', coin);
+			coinsLocks[coin] = moment();
 		}
 		return result;
 	}
@@ -41,7 +46,7 @@ function isOrderBookForBuy(coin, coinHistory, lastOrder) {
 				}
 				var item = history[history.length - 1];
 				var result = (item.sellVolume < (1/2) * item.buyVolume) &&
-					(volumeGrowing.reduce((b1, b2) => b1 + b2) > volumeGrowing.length * 0.8);
+					(volumeGrowing.reduce((b1, b2) => b1 + b2) > volumeGrowing.length * 0.6);
 
 				if (result) {
 					console.log('isOrderBookForBuy : ', coin);
@@ -51,9 +56,13 @@ function isOrderBookForBuy(coin, coinHistory, lastOrder) {
 	});
 }
 
+function ruleNotLocked(coin, coinHistory, lastOrder){
+	return (!!coinsLocks[coin] && moment().diff(coinsLocks[coin]) > 3600000) || !coinsLocks[coin])
+}
+
 module.exports.getBuyRules = function(){
   var buyRules = [
-		isOrderBookForBuy
+	  	ruleNotLocked
 	];
   return buyRules;
 }
