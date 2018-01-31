@@ -1,4 +1,4 @@
-var bittrex = require('node-bittrex-api');
+var bittrex = require('node.bittrex.api');
 var moment = require('moment');
 
 var dataset = require('./dataset');
@@ -29,27 +29,28 @@ function watchAndDecide(coin) {
 		market: coin
 	}, function (data, err) {
 		if (err) {
-			console.log("watchAndDecide getticker", err);
+			console.log("ERROR : watchAndDecide getticker", err);
 			return;
 		}
 		var summary = data.result; //[data.result.length - 1];
-		summary.TimeStamp = moment();
+		if (!!summary) {
+			summary.TimeStamp = moment();
 
-		if (!history[coin]) {
-			history[coin] = [summary];
-		}
-		else {
-			// console.log('maj de l\'historique', coin, history[coin].length);
-			var coinHistory = history[coin];
-			var last = coinHistory[coinHistory.length - 1];
-
-			coinHistory.push(summary);
-
-			if (coinHistory.length == MAX_HISTORY + 1) {
-				coinHistory.shift();
+			if (!history[coin]) {
+				history[coin] = [summary];
 			}
-			calculator.calculateOrder(coin, coinHistory, orderSystem.getLastOrder(coin));
+			else {
+				// console.log('maj de l\'historique', coin, history[coin].length);
+				var coinHistory = history[coin];
+				var last = coinHistory[coinHistory.length - 1];
 
+				coinHistory.push(summary);
+
+				if (coinHistory.length == MAX_HISTORY + 1) {
+					coinHistory.shift();
+				}
+				calculator.calculateOrder(coin, coinHistory, orderSystem.getLastOrder(coin));
+			}
 		}
 	});
 }

@@ -1,5 +1,5 @@
 // libs
-var bittrex = require('node-bittrex-api');
+var bittrex = require('node.bittrex.api');
 var moment = require('moment');
 
 //datas
@@ -9,13 +9,17 @@ module.exports.orderBooks = {};
 
 //methods
 module.exports.getOrderBook = function (coin) {
+	console.log('getOrderBook', coin, 'call');
 	return new Promise((resolve, reject) => {
 		if (module.exports.orderBooks[coin] !== undefined) {
+			console.log('getOrderBook', coin, 'allready', module.exports.orderBooks[coin]);
 			resolve(module.exports.orderBooks[coin]);
 		}
 		else {
+			console.log('getOrderBook', coin, 'refreshOrderBook');
 			module.exports.refreshOrderBook(coin)
 				.then(orderBook => {
+					console.log('getOrderBook', coin, 'got');
 					resolve(orderBook);
 				}, reject);
 		}
@@ -23,6 +27,7 @@ module.exports.getOrderBook = function (coin) {
 }
 var orderBooksPromises = {};
 module.exports.refreshOrderBook = function (coin) {
+	//console.log('request refreshOrderBook', coin);
 	if (orderBooksPromises[coin] !== undefined) {
 		return orderBooksPromises[coin];
 	}
@@ -33,6 +38,7 @@ module.exports.refreshOrderBook = function (coin) {
 				market: coin,
 				type: 'both'
 			}, function (data, err) {
+
 				if (!err) {
 					var calculatedHistory = module.exports.orderBooks[coin] && module.exports.orderBooks[coin].calculatedHistory ? module.exports.orderBooks[coin].calculatedHistory : [];
 					var orderBook = data.result;
@@ -67,11 +73,12 @@ module.exports.refreshOrderBook = function (coin) {
 					history.totalVolume = history.buyVolume + history.sellVolume;
 					orderBook.calculatedHistory.push(history);
 					delete orderBooksPromises[coin];
+					//console.log('response refreshOrderBook', coin, orderBook);
 					resolve(orderBook);
 				}
 				else {
 					delete orderBooksPromises[coin];
-					console.log("refreshOrderBook getorderbook", err);
+					console.log("ERROR : refreshOrderBook getorderbook", err);
 					reject(err);
 				}
 			});

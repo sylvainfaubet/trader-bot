@@ -1,4 +1,4 @@
-var bittrex = require('node-bittrex-api');
+var bittrex = require('node.bittrex.api');
 var moment = require('moment');
 var fs = require('fs');
 
@@ -32,7 +32,7 @@ module.exports.buy = function (coin) {
 				market: coin
 			}, (data, err) => {
 				if (err) {
-					console.log("buy error", err);
+					console.log("ERROR : buy", err);
 					reject(err);
 					isOrderPlaying[coin] = false;
 				}
@@ -66,7 +66,7 @@ module.exports.sell = function (coin) {
 				Market: coin
 			}, (data, err) => {
 				if (err) {
-					console.log("sell error", err);
+					console.log("ERROR : sell", err);
 					isOrderSelling[coin] = false;
 					reject(err);
 				}
@@ -89,6 +89,7 @@ module.exports.sell = function (coin) {
 };
 
 module.exports.getLastOrder = getLastOrder;
+
 function getLastOrder(coin) {
 	var orderList = getOrders(coin);
 	return orderList[orderList.length - 1] || undefined;

@@ -1,42 +1,22 @@
 var orderSystem = require('./orderSystem');
-var dataset = require('./dataset');
 var rulesSystem = require('./rules');
 
-var TI = require('technicalindicators');
-
-var bollinger = {};
-
-module.exports.calculateOrder = function (coin, coinHistory, lastOrder) {
-	// console.log('calculateOrder', coin, coinHistory.length, lastOrder);
-	dataset.history[coin] = coinHistory;
-
-	bollinger[coin] = TI.BollingerBands.calculate({
-		period: 20,
-		values: coinHistory.map(item => item.Ask),
-		stdDev: 2
-	});
-
-	testAndTrade(coin, coinHistory, lastOrder);
-}
+module.exports.calculateOrder = testAndTrade;
 
 function testAndTrade(coin, coinHistory, lastOrder) {
 	//buy trade
-	rulesSystem.isOneRulesOk(rulesSystem.getBuyRules())
+	rulesSystem.isBuyRulesOk(coin, coinHistory, lastOrder)
 		.then(result => {
-			if (result) {
-				// console.log("mustBuy", result);
-				orderSystem.buy(coin);
-			}
-		});
+			// console.log("mustBuy", result);
+			orderSystem.buy(coin);
+		}, error => {});
 
 	// sell trade
 	if (lastOrder !== undefined && lastOrder.sell === undefined) {
-		rulesSystem.isOneRulesOk(rulesSystem.getSellRules())
+		rulesSystem.isSellRulesOk(coin, coinHistory, lastOrder)
 			.then(result => {
-				if (result) {
-					// console.log("mustSell", result);
-					orderSystem.sell(coin);
-				}
-			});
+				// console.log("mustSell", result);
+				orderSystem.sell(coin);
+			}, error => {});
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "name": "bittrex-bot",
+  "name": "trader-bot",
   "version": "1.0.0",
   "description": "a simple bittrex bot",
   "main": "src/server.js",
@@ -11,7 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "moment": "^2.19.3",
-    "node-bittrex-api": "^0.7.8",
-    "technicalindicators": "^1.0.21"
+    "node.bittrex.api": "^1.0.0"
   }
 }
