@@ -9,17 +9,17 @@ module.exports.orderBooks = {};
 
 //methods
 module.exports.getOrderBook = function (coin) {
-	console.log('getOrderBook', coin, 'call');
+	//console.log('getOrderBook', coin, 'call');
 	return new Promise((resolve, reject) => {
 		if (module.exports.orderBooks[coin] !== undefined) {
-			console.log('getOrderBook', coin, 'allready', module.exports.orderBooks[coin]);
+			//console.log('getOrderBook', coin, 'allready', module.exports.orderBooks[coin]);
 			resolve(module.exports.orderBooks[coin]);
 		}
 		else {
-			console.log('getOrderBook', coin, 'refreshOrderBook');
+			//console.log('getOrderBook', coin, 'refreshOrderBook');
 			module.exports.refreshOrderBook(coin)
 				.then(orderBook => {
-					console.log('getOrderBook', coin, 'got');
+					//console.log('getOrderBook', coin, 'got');
 					resolve(orderBook);
 				}, reject);
 		}
@@ -57,20 +57,36 @@ module.exports.refreshOrderBook = function (coin) {
 					var history = {
 						rateBuy: rateBuy,
 						buyVolume: orderBook.buy.filter(item => {
-								return parseFloat(rateBuy) * 0.8 < parseFloat(item.Rate);
+								return parseFloat(rateBuy) * 0.75 < parseFloat(item.Rate);
 							})
 							.map(item => parseFloat(item.Rate) * parseFloat(item.Quantity))
 							.reduce((a, b) => a + b),
 						rateSell: rateSell,
 						sellVolume: orderBook.sell.filter(item => {
-								return parseFloat(rateSell) * 1.2 > parseFloat(item.Rate);
+								return parseFloat(rateSell) * 1.25 > parseFloat(item.Rate);
 							})
 							.map(item => parseFloat(item.Rate) * parseFloat(item.Quantity))
 							.reduce((a, b) => a + b),
 						TimeStamp: moment()
 					}
 
+					// if (history.buyVolume.length > 0) {
+					// 	history.buyVolume = history.buyVolume.reduce((a, b) => a + b);
+					// }
+					// else {
+					// 	history.buyVolume = 0;
+					// }
+					//
+					// if (history.sellVolume.length > 0) {
+					//
+					// 	history.sellVolume = history.sellVolume.reduce((a, b) => a + b);
+					// }
+					// else {
+					// 	history.sellVolume = 0;
+					// }
+
 					history.totalVolume = history.buyVolume + history.sellVolume;
+					// console.log(history);
 					orderBook.calculatedHistory.push(history);
 					delete orderBooksPromises[coin];
 					//console.log('response refreshOrderBook', coin, orderBook);
@@ -78,7 +94,7 @@ module.exports.refreshOrderBook = function (coin) {
 				}
 				else {
 					delete orderBooksPromises[coin];
-					console.log("ERROR : refreshOrderBook getorderbook", err);
+					console.error("ERROR : refreshOrderBook getorderbook", err);
 					reject(err);
 				}
 			});

@@ -1,15 +1,14 @@
 var watcher = require("./watcher");
 
-function main()
-{
+function main() {
 	var coinsToWatch = [
-		'BTC-BTG',
-		'BTC-BCC',
-		'BTC-RDD',
-		'BTC-LTC',
-		'BTC-ETH',
-		'BTC-XRP',
-		'BTC-XMY',
+		// 'BTC-BTG',
+		// 'BTC-BCC',
+		// 'BTC-RDD',
+		// 'BTC-LTC',
+		// 'BTC-ETH',
+		// 'BTC-XRP',
+		// 'BTC-XMY',
 		'BTC-EMC2'
 	];
 
@@ -17,16 +16,13 @@ function main()
 
 	watcher.watchAll(coinsToWatch);
 
-	process.on("SIGINT", () =>
-	{
+	process.on("SIGINT", () => {
 		watcher.stopAll(coinsToWatch)
-			.then(() =>
-			{
+			.then(() => {
 				console.log('!!!!!!!!!!!STOP!!!!!!!!!!!!!');
 				process.exit(0);
-			}, error =>
-			{
-				console.log("error", error);
+			}, error => {
+				console.error("error", error);
 			});
 	});
 }

@@ -48,24 +48,29 @@ function isMaxLossDone(coin, coinHistory, lastOrder) {
 
 function isOrderBookForBuy(coin, coinHistory, lastOrder) {
 	return new Promise((resolve, reject) => {
-		console.log('isOrderBookForBuy', coin, 'call');
+		// console.log('isOrderBookForBuy', coin, 'call');
 		dataset.getOrderBook(coin)
 			.then(orderBook => {
-				console.log('isOrderBookForBuy : ', coin, 'pass');
+				// console.log('isOrderBookForBuy : ', coin, 'pass');
 				var history = orderBook.calculatedHistory;
 				var volumeGrowing = [];
 				var lastVolume = Infinity;
 
-				for (var i = 0; i < history.length - 1; i++) {
+				for (var i = history.length - 4 > 0 ? history.length - 4 : 0; i < history.length - 1; i++) {
 					var item = history[i];
 					volumeGrowing.push(item.totalVolume > lastVolume);
 					lastVolume = item.totalVolume;
 				}
 
+				var volumeGrowingBool = volumeGrowing.length > 0 &&
+					(volumeGrowing.reduce((b1, b2) => b1 + b2) > volumeGrowing.length * 0.7);
+
+				if (volumeGrowing.length > 0) {
+					console.log(volumeGrowing, volumeGrowing.reduce((b1, b2) => b1 + b2) > volumeGrowing.length * 0.5);
+				}
 				var item = history[history.length - 1];
-				console.log('isOrderBookForBuy : item', item, 'volumeGrowing', volumeGrowing);
-				var result = (item.sellVolume < (1 / 2) * item.buyVolume) &&
-					(volumeGrowing.reduce((b1, b2) => b1 + b2) > volumeGrowing.length * 0.6);
+				//	console.log('isOrderBookForBuy : item', item, 'volumeGrowing', volumeGrowingBool);
+				var result = (item.sellVolume < (1 / 2) * item.buyVolume) && volumeGrowingBool;
 
 				if (result) {
 					console.log('isOrderBookForBuy : ', coin);

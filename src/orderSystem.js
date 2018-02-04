@@ -26,13 +26,13 @@ module.exports.buy = function (coin) {
 		var orderList = getOrders(coin);
 		var last = getLastOrder(coin);
 		if ((!last || !!last.sell) && !isOrderPlaying[coin] && !locked) {
-			console.log('-----------------------------------------> achat', coin);
+			//console.log('-----------------------------------------> achat', coin);
 			isOrderPlaying[coin] = true;
 			bittrex.getmarketsummary({
 				market: coin
 			}, (data, err) => {
 				if (err) {
-					console.log("ERROR : buy", err);
+					console.error("ERROR : buy", err);
 					reject(err);
 					isOrderPlaying[coin] = false;
 				}
@@ -60,13 +60,13 @@ module.exports.sell = function (coin) {
 		// console.log("last", last);
 
 		if (!!last && !last.sell && !isOrderSelling[coin]) {
-			console.log('-------------------------------------------> vente', coin);
+			//	console.log('-------------------------------------------> vente', coin);
 			isOrderSelling[coin] = true;
 			bittrex.getmarketsummary({
 				Market: coin
 			}, (data, err) => {
 				if (err) {
-					console.log("ERROR : sell", err);
+					console.error("ERROR : sell", err);
 					isOrderSelling[coin] = false;
 					reject(err);
 				}
@@ -136,7 +136,7 @@ function logOrder(order) {
 			order.results.gain + "\r\n",
 			function (err) {
 				if (err) {
-					console.log("logOrder fs.appendFile", err);
+					console.error("logOrder fs.appendFile", err);
 					reject();
 				}
 				console.log('Saved!');

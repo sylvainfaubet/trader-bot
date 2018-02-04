@@ -21,7 +21,7 @@ module.exports.watchAll = function (coinsToWatch) {
 function setWatchInterval(coin, interval) {
 	console.log(coin);
 	intervals[coin] = setInterval(watchAndDecide, interval * 1000, coin);
-	orderBooksIntervals[coin] = setInterval(dataset.refreshOrderBook, 10000, coin);
+	orderBooksIntervals[coin] = setInterval(dataset.refreshOrderBook, 20000, coin);
 }
 
 function watchAndDecide(coin) {
@@ -29,7 +29,7 @@ function watchAndDecide(coin) {
 		market: coin
 	}, function (data, err) {
 		if (err) {
-			console.log("ERROR : watchAndDecide getticker", err);
+			console.error("ERROR : watchAndDecide getticker", err);
 			return;
 		}
 		var summary = data.result; //[data.result.length - 1];
